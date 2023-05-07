@@ -1,0 +1,93 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .login-container {
+        max-width: 400px;
+        margin: 0 auto;
+        margin-top: 150px;
+        padding: 20px;
+        border: 1px solid #eaeaea;
+        background-color: #fff;
+    }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            font-weight: bold;
+        }
+
+    .form-control:focus {
+        box-shadow: none;
+    }
+
+    .btn-login {
+        background-color: #343a40;
+        color: #fff;
+    }
+</style>
+<body>
+    <div class="container">
+        <div class="login-container">
+
+            <h2>Login</h2>
+            @if (!string.IsNullOrWhiteSpace((string)ViewData["SuccessMessage"]))
+            {
+                <div id="success-alert" class="alert alert-success">@ViewData["SuccessMessage"]</div>
+            }
+            @if (!string.IsNullOrWhiteSpace((string)ViewData["ErrorMessage"]))
+            {
+                <div id="error-alert" class="alert alert-danger">@ViewData["ErrorMessage"]</div>
+            }
+            @if (!string.IsNullOrWhiteSpace((string)TempData["SuccessMessage"]))
+            {
+                <div id="success-alert" class="alert alert-success">@TempData["SuccessMessage"]</div>
+            }
+            @if (!string.IsNullOrWhiteSpace((string)TempData["ErrorMessage"]))
+            {
+                <div id="error-alert" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+            }
+            @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+            {
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Email)
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @autofocus = "autofocus", @placeholder = "Enter your Email" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.PasswordFor(m => m.Password, new { @placeholder = "Enter your password", @class = "form-control", @type = "password" })
+                </div>
+                <button type="submit" class="btn btn-login btn-block">Login</button>
+            }
+        </div>
+    </div>
+
+</body>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Hide success and error messages after 5 seconds
+            setTimeout(function () {
+                $("#success-alert, #error-alert").fadeOut("slow", function () {
+                    $(this).remove();
+                });
+            }, 2000);
+
+
+        });
+    </script>
+}

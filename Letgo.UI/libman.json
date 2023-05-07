@@ -1,0 +1,22 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "font-awesome@5.15.4",
+      "destination": "wwwroot/lib/font-awesome/",
+      "files": [
+        "css/all.min.css",
+        "webfonts/*.*"
+      ]
+    },
+    {
+      "library": "bootstrap@5.2.3",
+      "destination": "wwwroot/lib/bootstrap5.2.3/"
+    },
+    {
+      "library": "popper.js@2.11.7",
+      "destination": "wwwroot/lib/popper.js/"
+    }
+  ]
+}

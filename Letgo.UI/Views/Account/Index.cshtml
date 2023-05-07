@@ -1,0 +1,100 @@
+﻿@model User
+<style>
+    body {
+        background-color: #f8f9fa;
+        color: #000000;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .profile-container {
+        background-color: #ffffff;
+        border-radius: 5px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .profile-body {
+        display: flex;
+        align-items: center;
+    }
+
+    .profile-picture {
+        flex: 0 0 150px;
+        margin-right: 20px;
+    }
+
+    .profile-info {
+        flex: 1;
+    }
+
+        .profile-info h2 {
+            margin-top: 0;
+        }
+
+        .profile-info p {
+            margin-bottom: 10px;
+        }
+</style>
+
+<body>
+    <div class="container">
+        <div class="profile-container">
+            @if (!string.IsNullOrWhiteSpace((string)ViewData["SuccessMessage"]))
+            {
+                <div id="success-alert" class="alert alert-success">@ViewData["SuccessMessage"]</div>
+            }
+            @if (!string.IsNullOrWhiteSpace((string)ViewData["ErrorMessage"]))
+            {
+                <div id="error-alert" class="alert alert-danger">@ViewData["ErrorMessage"]</div>
+            }
+            @if (!string.IsNullOrWhiteSpace((string)TempData["SuccessMessage"]))
+            {
+                <div id="success-alert" class="alert alert-success">@TempData["SuccessMessage"]</div>
+            }
+            @if (!string.IsNullOrWhiteSpace((string)TempData["ErrorMessage"]))
+            {
+                <div id="error-alert" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+            }
+            <div class="profile-header">
+                <h1>Profil Sayfası</h1>
+                <a href="@Url.Action("EditProfile", new { id = Model.Id.ToString() })" type="submit" class="btn btn-dark btn-sm">Düzenle</a>
+            </div>
+            <div class="profile-body">
+                <div class="profile-picture">
+                    <img width="350" height="450" src="@Model.ProfilePhoto" alt="Profil Resmi">
+                </div>
+                <div class="profile-info">
+                    <h2>@Model.FullName</h2>
+                    <p>Email: @Model.Email</p>
+                    <p>Yaş: @Model.DateOfBirth.Year</p>
+                    <p>Şehir:@Model.City</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Hide success and error messages after 5 seconds
+            setTimeout(function () {
+                $("#success-alert, #error-alert").fadeOut("slow", function () {
+                    $(this).remove();
+                });
+            }, 2000);
+
+
+        });
+    </script>
+}

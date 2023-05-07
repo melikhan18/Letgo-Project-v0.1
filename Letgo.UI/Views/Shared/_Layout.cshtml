@@ -1,0 +1,175 @@
+﻿@inject CartService CartService
+@{
+    var categoryService = new Letgo.Business.Services.CategoryService();
+    ViewBag.Categories = categoryService.GetAll();
+    var productService = new Letgo.Business.Services.ProductService();
+    ViewBag.Products = productService.GetAmountLessThenFiveProducts();
+    var tagService = new Letgo.Business.Services.TagService();
+    ViewBag.Tags = tagService.GetAll();
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 shrink-to-fit=no" />
+    <title>@ViewData["Title"] - Letgo.UI</title>
+    <link href="~/css/site.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.min.css" />
+    <link href="~/lib/bootstrap5.2.3/css/bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap5.2.3/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap5.2.3/css/bootstrap.rtl.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap5.2.3/css/bootstrap.rtl.min.css" rel="stylesheet" />
+
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2 mt-2">
+                <div class="flex-shrink-0 p-3">
+                    <a href="/" class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
+                        <svg class="bi pe-none me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
+                        <span class="fs-5 fw-semibold">Han Project | v0.1</span>
+                    </a>
+                    <ul class="list-unstyled ps-0">
+                        <li class="mb-1">
+                            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="true">
+                                Anasayfa
+                            </button>
+                            <div class="collapse show" id="home-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li><a href="@Url.Action("DecreasingProduct", "Home")" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Tükenmek Üzere Olanlar</a></li>
+                                    <li><a href="@Url.Action("MostLikedProducts" , "Home")" class="link-body-emphasis d-inline-flex text-decoration-none rounded">En Beğenilenler</a></li>
+                                    <li><a href="@Url.Action("NewestProduct" , "Home")" class="link-body-emphasis d-inline-flex text-decoration-none rounded">Yeni Eklenenler</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="mb-1">
+                            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
+                                Kategoriler
+                            </button>
+                            <div class="collapse show" id="dashboard-collapse" style="">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    @foreach (var item in (IEnumerable<Category>)ViewBag.Categories)
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("Index", "Category", new { id = item.Id })" class="link-body-emphasis d-inline-flex text-decoration-none rounded">
+                                                @item.Name
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="mb-1">
+                            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse" data-bs-target="#orders-collapse" aria-expanded="true">
+                                Etiketler
+                            </button>
+                            <div class="collapse show" id="orders-collapse" style="">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+
+                                    @foreach (var item in (IEnumerable<Tag>)ViewBag.Tags)
+                                    {
+                                        <li><a href="@Url.Action("Index", "Tag", new { id = item.TagId })" class="link-body-emphasis d-inline-flex text-decoration-none rounded">@item.TagName</a></li>
+                                    }
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="border-top my-3"></li>
+                        @if (Context.User.Identity.IsAuthenticated)
+                        {
+
+
+                            <li class="mb-1">
+                                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="true">
+                                    Hesabım
+                                </button>
+                                <div class="collapse show" id="account-collapse" style="">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        <li><a href="@Url.Action("CreateProduct", "Account")" class="link-dark d-inline-flex text-decoration-none rounded">Yeni Ürün</a></li>
+                                        <li><a href="@Url.Action("MyProducts", "Account")" class="link-dark d-inline-flex text-decoration-none rounded">Satıştaki Ürünlerim </a></li>
+                                        <li><a href="@Url.Action("Index", "Account")" class="link-dark d-inline-flex text-decoration-none rounded">Profil</a></li>
+                                        <li><a href="@Url.Action("EditProfile", "Account")" class="link-dark d-inline-flex text-decoration-none rounded">Ayarlar</a></li>
+                                        <li><a href="@Url.Action("Logout", "Account")" class="link-dark d-inline-flex text-decoration-none rounded">Çıkış</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="mb-1">
+                                <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0" data-bs-toggle="collapse" data-bs-target="#account-collapse" aria-expanded="true">
+                                    Hesabım
+                                </button>
+                                <div class="collapse show" id="account-collapse" style="">
+                                    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                        <li><a href="@Url.Action("Login", "Account")" class="link-dark d-inline-flex text-decoration-none rounded">Giriş Yap</a></li>
+                                        <li><a href="@Url.Action("Register", "Account")" class="link-dark d-inline-flex text-decoration-none rounded">Kayıt Ol</a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <header class="d-flex justify-content-center py-5">
+                    <ul class="nav nav-pills">
+                        @foreach (var item in (IEnumerable<Tag>)ViewBag.Tags)
+                        {
+                            <li class="nav-item"><a href="@Url.Action("Index", "Tag", new { id = item.TagId })" class="nav-link text-dark" aria-current="page">@item.TagName</a></li>
+                            <li class="nav-item"><a href="#" class="nav-link text-dark">|</a></li>
+                        }
+
+                    </ul>
+                </header>
+
+                @RenderBody()
+            </div>
+            <div class="col-lg-2" id="feature-products">
+                <div class="flex-shrink-0 p-3">
+                    <a href="/" class="d-flex align-items-center pb-3 mb-3 link-body-emphasis text-decoration-none border-bottom">
+                        <svg class="bi pe-none me-2" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
+                        <span class="fs-5 fw-semibold">Sepetim</span>
+                    </a>
+                    <ul class="list-unstyled ps-0">
+                        <li class="mb-1">
+                            <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#sepet-collapse" aria-expanded="true">
+                                Sepet
+                            </button>
+                            <div class="collapse show" id="sepet-collapse">
+                                <ul class="btn-toggle-nav list-unstyled list-group fw-normal pb-1 small">
+                                    @foreach (var item in (List<Product>)CartService.GetCart().Items)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <img src="@item.ImageUrl" width="60" height="60" class="mr-2">
+                                            <span>@item.Name - ₺@item.Price</span>
+                                        </li>
+                                    }
+                                    @if (CartService.GetCart().Items.Count > 0)
+                                    {
+                                        <li>
+                                            <button type="button" onclick="window.location.href='@Url.Action("Index", "Cart")'" class="btn btn-dark mt-3">
+                                                Sepete Git
+                                            </button>
+                                        </li>
+                                    }
+
+                                </ul>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+                @await RenderSectionAsync("filters", required: false)
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/site.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

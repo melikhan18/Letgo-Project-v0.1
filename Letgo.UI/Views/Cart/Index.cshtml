@@ -1,0 +1,42 @@
+﻿@model Cart
+@{
+    var count = 1;
+    decimal totalPrice = 0;
+}
+<div class="container">
+    <h1>Sepet</h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Ürün Resmi</th>
+                <th scope="col">Ürün Adı</th>
+                <th scope="col">Fiyat</th>
+                <th scope="col">Toplam</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <th scope="row">@(count++)</th>
+                    <td><img src="@item.ImageUrl" width="75" height="75"></td>
+                    <td>@item.Name</td>
+                    <td>@item.Price ₺</td>
+                    <td>
+                        <button type="button" class="btn btn-dark" onclick="window.location.href='@Url.Action("RemoveItemFromCart", "Cart", new { id = item.Id })'">Kaldır</button>
+                    </td>
+                </tr>
+
+                {
+                    totalPrice += item.Price;
+                }
+            }
+        </tbody>
+    </table>
+    <div class="text-right">
+        <h4>Toplam Tutar: @totalPrice TL</h4>
+        <button type="button" onclick="window.location.href='@Url.Action("Payment", "Cart")'" class="btn btn-outline-success">Satın Al</button>
+    </div>
+</div>

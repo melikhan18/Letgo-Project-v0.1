@@ -1,0 +1,96 @@
+﻿@model Cart
+
+@if (Context.User.Identity.IsAuthenticated == false)
+{
+    <div class="container">
+        <div class="col-12 text-center">
+            <h2 style="margin-top:25vh">Lütfen önce <a href="@Url.Action("Login", "Account")">Giriş yapın</a> veya <a href="@Url.Action("Register", "Account")">Kayıt Olun</a></h2>
+        </div>  
+    </div>
+
+}
+else
+{
+
+    decimal _totalPrice = 0;
+    foreach (var item in Model.Items)
+    {
+        _totalPrice += item.Price;
+    }
+
+
+
+    <div class="container">
+        <h1>Ödeme</h1>
+        <div class="row">
+            @if (Context.User.Identity.IsAuthenticated)
+            {
+                <div class="col-md-6">
+                    <h3>Fatura Bilgileri</h3>
+                    <div>
+                        <label for="fullName">Ad Soyad</label>
+                        <input type="text" id="fullName" value="@Context.User.Claims.FirstOrDefault(c => c.Type == "FullName").Value" name="fullName" class="form-control" required>
+                    </div>
+                    <div>
+                        <label for="email">E-posta</label>
+                        <input type="email" id="email" value="@Context.User.Claims.FirstOrDefault(c => c.Type == "Email").Value" name="email" class="form-control" required>
+                    </div>
+                    <div>
+                        <label for="address">Adres</label>
+                        <input type="text" id="address" value="@Context.User.Claims.FirstOrDefault(c => c.Type == "Address").Value" name="address" class="form-control" required>
+                    </div>
+                    <div>
+                        <label for="city">Şehir</label>
+                        <input type="text" id="city" value="@Context.User.Claims.FirstOrDefault(c => c.Type == "City").Value" name="city" class="form-control" required>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-md-6">
+                    <h3>Fatura Bilgileri</h3>
+                    <div>
+                        <label for="fullName">Ad Soyad</label>
+                        <input type="text" id="fullName" name="fullName" class="form-control" required>
+                    </div>
+                    <div>
+                        <label for="email">E-posta</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div>
+                        <label for="address">Adres</label>
+                        <input type="text" id="address" name="address" class="form-control" required>
+                    </div>
+                    <div>
+                        <label for="city">Şehir</label>
+                        <input type="text" id="city" name="city" class="form-control" required>
+                    </div>
+                </div>
+            }
+
+            <div class="col-md-6">
+                <h3>Ödeme Bilgileri</h3>
+                <div>
+                    <label for="cardNumber">Kart Numarası</label>
+                    <input type="text" id="cardNumber" name="cardNumber" class="form-control" required>
+                </div>
+                <div>
+                    <label for="cardHolder">Kart Üzerindeki İsim</label>
+                    <input type="text" id="cardHolder" name="cardHolder" class="form-control" required>
+                </div>
+                <div>
+                    <label for="expirationDate">Son Kullanma Tarihi</label>
+                    <input type="text" id="expirationDate" name="expirationDate" class="form-control" required>
+                </div>
+                <div>
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" name="cvv" class="form-control" required>
+                </div>
+            </div>
+        </div>
+        <div class="text-right mt-4">
+            <h4>Toplam Tutar: @_totalPrice TL</h4>
+            <button class="btn btn-primary">Ödemeyi Tamamla</button>
+        </div>
+    </div>
+}

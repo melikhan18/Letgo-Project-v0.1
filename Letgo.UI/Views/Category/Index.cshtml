@@ -1,0 +1,157 @@
+﻿@model Category
+@Model.Products.Count
+
+<section class="py-5">
+    <div class="container d-flex justify-content-center">
+        <div class="row" id="products">
+            @if (!string.IsNullOrWhiteSpace((string)ViewData["SuccessMessage"]))
+            {
+                <div id="success-alert" class="alert alert-success">@ViewData["SuccessMessage"]</div>
+            }
+            @if (!string.IsNullOrWhiteSpace((string)ViewData["ErrorMessage"]))
+            {
+                <div id="error-alert" class="alert alert-danger">@ViewData["ErrorMessage"]</div>
+            }
+            @if (!string.IsNullOrWhiteSpace((string)TempData["SuccessMessage"]))
+            {
+                <div id="success-alert" class="alert alert-success">@TempData["SuccessMessage"]</div>
+            }
+            @if (!string.IsNullOrWhiteSpace((string)TempData["ErrorMessage"]))
+            {
+                <div id="error-alert" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+            }
+            @foreach (var item in Model.Products)
+            {
+                <div class="col-md-3">
+                    <div class="product-wrapper mb-45 text-center">
+                        <div class="product-img">
+                            <a href="@Url.Action("Index", "Product", new { id = item.Id })" data-abc="true">
+                                <img src="@item.ImageUrl" style=" max-width: 100%; height:350px; width:300px" alt="">
+                            </a> <span class="text-center"><i class="fa fa-rupee"></i>@item.Price</span>
+                            <div class="product-action">
+                                <div class="product-action-style">
+                                    <a href="@Url.Action("AddToCart", "Cart", item)"> <i class="fa fa-plus"></i> </a> <a href="#">
+                                        <i class="fa fa-heart"></i>
+                                    </a> <a href="@Url.Action("Index", "Product", new { id = item.Id })"> <i class="fa fa-shopping-cart"></i> </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+</section>
+
+
+@section filters{
+    <div class="form-group pt-5">
+        <label for="price-slider">Fiyat Aralığı:</label>
+        <input type="range" class="form-range" id="price-slider" name="price-slider" min="0" max="10000" step="100">
+        <span id="price-value"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Renk:</label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="color" id="red-color" value="3">
+            <label class="form-check-label" for="red-color">Kırmızı</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="color" id="blue-color" value="1">
+            <label class="form-check-label" for="blue-color">Mavi</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="color" id="green-color" value="2">
+            <label class="form-check-label" for="green-color">Yeşil</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="color" id="black-color" value="4">
+            <label class="form-check-label" for="black-color">Siyah</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="color" id="yellow-color" value="5">
+            <label class="form-check-label" for="yellow-color">Sarı</label>
+        </div>
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="brand-select">Marka:</label>
+        <select class="form-control" id="brand-select" name="brand-select">
+            @foreach (var brand in (IEnumerable<Brand>)ViewData["Brands"])
+            {
+                <option value="@brand.Id">@brand.Name</option>
+            }
+        </select>
+    </div>
+
+
+    <button type="submit" class="btn btn-dark" id="filter-submit">Filtrele</button>
+}
+
+@section Scripts{
+    <script>
+        const priceSlider = document.getElementById('price-slider');
+        const priceValue = document.getElementById('price-value');
+        const products = document.getElementById('products');
+        const url = "http://localhost:5035/api/product/productsFilterBySearchCriterias";
+        priceSlider.addEventListener('input', function () {
+            priceValue.textContent = ' ' + priceSlider.value + ' TL';
+        });
+
+        $(document).ready(function () {
+            $("#filter-submit").click(function (event) {
+                event.preventDefault();
+                const selectedBrand = document.getElementById("brand-select").value;
+                var selectedColor = $("input[name='color']:checked").val();
+                var selectedPrice = $("#price-slider").val();
+                console.log("selectedBrand", selectedBrand);
+                console.log("selectedColor", selectedColor);
+                console.log("selectedPrice", selectedPrice);
+                       var settings = {
+                           "url": "http://localhost:5035/api/product/productsFilterBySearchCriterias",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {"Content-Type": "application/json"},
+                    "data": JSON.stringify({
+                        "price": selectedPrice,
+                        "categoryId": "@Model.Id",
+                        "brandId": selectedBrand,
+                        "color": selectedColor == undefined ? 1 : parseInt(selectedColor)
+                    }),
+                };
+
+                $.ajax(settings).done(function (response) {
+                    products.innerHTML = "";
+                    response.forEach(function (product) {
+                        // HTML kodunu ürün bilgileriyle oluştur
+                        var html = `
+                        <div class="col-md-3">
+                    <div class="product-wrapper mb-45 text-center">
+                        <div class="product-img">
+                            <a href="#" data-abc="true">
+                                <img src="${product.imageUrl}" style=" max-width: 100%; height:350px; width:300px" alt="">
+                            </a> <span class="text-center"><i class="fa fa-rupee"></i>${product.price}</span>
+                            <div class="product-action">
+                                <div class="product-action-style">
+                                    <a href="#"> <i class="fa fa-plus"></i> </a> <a href="#">
+                                        <i class="fa fa-heart"></i>
+                                    </a> <a href="#"> <i class="fa fa-shopping-cart"></i> </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                `;
+
+                        // Ürünü ürün listesine ekle
+                        products.insertAdjacentHTML('beforeend', html);
+                    });
+                });
+
+
+            });
+        });
+    </script>
+}

@@ -1,0 +1,117 @@
+﻿@model Product
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 40px;
+        background-color: #fff;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .form-group {
+        width: 54vh;
+    }
+    .form-group label {
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background-color: #343a40;
+        border-color: #343a40;
+    }
+
+        .btn-primary:hover {
+            background-color: #23272b;
+            border-color: #23272b;
+        }
+</style>
+
+
+<div class="container">
+    @if (!string.IsNullOrWhiteSpace((string)ViewData["SuccessMessage"]))
+    {
+        <div id="success-alert" class="alert alert-success">@ViewData["SuccessMessage"]</div>
+    }
+    @if (!string.IsNullOrWhiteSpace((string)ViewData["ErrorMessage"]))
+    {
+        <div id="error-alert" class="alert alert-danger">@ViewData["ErrorMessage"]</div>
+    }
+    @if (!string.IsNullOrWhiteSpace((string)TempData["SuccessMessage"]))
+    {
+        <div id="success-alert" class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (!string.IsNullOrWhiteSpace((string)TempData["ErrorMessage"]))
+    {
+        <div id="error-alert" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    <h2 class="text-center">Ürün Ekleme</h2>
+    @using (Html.BeginForm("EditProduct", "Account", FormMethod.Post))
+    {
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name, "Ürün Adı:")
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @id = "urunAdi", @placeholder = "Ürün adını girin" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Description, "Açıklama:")
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", @id = "aciklama", @rows = "3", @placeholder = "Ürün açıklamasını girin" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Price, "Ürün fiyatını girin")
+            @Html.TextBoxFor(m => m.Price, new { @class = "form-control", @placeholder = "Ürün stok miktarını girin" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.StockQuantity, "Stok Miktarı:")
+            @Html.TextBoxFor(m => m.StockQuantity, new { @class = "form-control", @placeholder = "Ürün stok miktarını girin", @type = "number" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.ImageUrl)
+            @Html.TextBoxFor(m => m.ImageUrl, new { @class = "form-control", @placeholder = "Ürün resim URL'sini girin" })
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.CategoryId, "Kategori:")
+            @Html.DropDownListFor(m => m.CategoryId, new SelectList((List<Category>)ViewData["Categories"], "Id", "Name"), "Kategori seçin", new { @class = "form-control", @id = "kategori" })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Color, "Renk:")
+            <div>
+                @Html.RadioButtonFor(m => m.Color, "Red", new { id = "renk-red" })
+                <label for="renk-red" class="renk-label">Kırmızı</label>
+            </div>
+            <div>
+                @Html.RadioButtonFor(m => m.Color, "Blue", new { id = "renk-blue" })
+                <label for="renk-blue" class="renk-label">Mavi</label>
+            </div>
+            <div>
+                @Html.RadioButtonFor(m => m.Color, "Green", new { id = "renk-green" })
+                <label for="renk-green" class="renk-label">Yeşil</label>
+            </div>
+            <div>
+                @Html.RadioButtonFor(m => m.Color, "Yellow", new { id = "renk-yellow" })
+                <label for="renk-yellow" class="renk-label">Sarı</label>
+            </div>
+            <div>
+                @Html.RadioButtonFor(m => m.Color, "Orange", new { id = "renk-orange" })
+                <label for="renk-orange" class="renk-label">Turuncu</label>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.BrandId, "Marka:")
+            @Html.DropDownListFor(m => m.BrandId, new SelectList((List<Brand>)ViewData["Brands"], "Id", "Name"), "Marka seçin", new { @class = "form-control", @id = "marka" })
+        </div>
+        <div class="form-group text-center mt-2">
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+            <a href="@Context.Request.Headers["Referer"].ToString()" type="button" class="btn btn-primary">Geri Dön</a>
+        </div>
+
+    }
+</div>
